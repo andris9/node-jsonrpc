@@ -18,11 +18,15 @@
  *     }).listen(80);
  * 
  *     RPCMethods = {
- *         rpc_insert: function(rpc, param1, param2){
+ *         insert: function(rpc, param1, param2){
  *             if(param1!=param2)
  *                 rpc.error("Params doesn't match!");
  *             else
  *                 rpc.response("Params are OK!");
+ *         },
+ *         _private: function(){
+ *             // leading underscore makes method private
+ *             // and not accessible by public RPC interface
  *         }
  *     }
  * 
@@ -41,10 +45,8 @@ exports.RPCHandler = RPCHandler;
  * new RPCHandler(request, response, methods, debug)
  * - request (Object): http.ServerRequest object
  * - response (Object): http.ServerResponse object
- * - methods (Object): available RPC methods. All methods which names are
- *   preceeded with "rpc_" can be used. For example method "insert" would
- *   actually be "rpc_insert"
- *       methods = {rpc_insert: function(rpc, param1, param2, ... paramN){})
+ * - methods (Object): available RPC methods. 
+ *       methods = {insert: function(rpc, param1, param2, ... paramN){})
  * - debug (Boolean): If TRUE use actual error messages on runtime errors
  * 
  * Creates an RPC handler object which parses the input, forwards the data
@@ -58,8 +60,12 @@ function RPCHandler(request, response, methods, debug){
     this.json = false;
     this.id = false;
     
-    // start post body processing
-    this._processRequest();
+    if(typeof this.RPCMethods=="object" && this.HTTPRequest && this.HTTPResponse){
+        // start post body processing
+        this._processRequest();
+    }else{
+        throw new Error("Invalid params");
+    }
 }
 
 //////////// PUBLIC METHODS ////////////
@@ -110,11 +116,14 @@ RPCHandler.prototype._run = function(){
     if(!this.RPCMethods)
         return this.error("No methods", this.id);
     
-    if(!this.json.method || !"rpc_"+this.json.method in this.RPCMethods)
+    if(!this.json.method || // method name must be set
+      this.json.method.substr(0,1)=="_" || // method name cant begin with an underscore
+        !this.json.method in this.RPCMethods || // method needs to be inside this.RPCMethods
+          typeof this.RPCMethods[this.json.method]!="function") // method needs to be function
         return this.error("Invalid request method", this.id);
 
     // runs the actual RPC method
-    this.RPCMethods["rpc_"+this.json.method].apply(
+    this.RPCMethods[this.json.method].apply(
         this.RPCMethods, [this].concat(this.json.params || []));
 }
 

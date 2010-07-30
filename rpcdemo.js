@@ -16,16 +16,17 @@ http.createServer(function (request, response) {
 console.log("running")
 
 // Define available RPC methods
-// NB! Due to security reasons, all method names must be preceeded
-//     with "rpc_" but the actual method names to be used inside
-//     JSON-RPC messages will stay the same
-//     For example:
-//         {method:"insert"} will activate RPCMethods.rpc_insert
+// NB! Methods with leading _ before method names are considered
+//     private and can't be used publicly
 RPCMethods = {
-    rpc_insert: function(rpc, param1, param2){
+    insert: function(rpc, param1, param2){
         if(param1!=param2)
             rpc.error("Params doesn't match!");
         else
             rpc.response("Params are OK!");
+    },
+    _private: function(){
+        // this method is private and can't be accessed by the public
+        // itnerface
     }
 }
