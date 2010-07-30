@@ -7,6 +7,12 @@ JSON-RPC is an extremely simple format to communicate between the client (for ex
 It's an easy way to run functions server side by providing the server the function name that needs to be executed and the params alongside with it.
 Server runs this function and returns the results for it.
 
+Illustrating pseudocode
+
+    --> RUN FUNCTION "add_comment" WITH "user", "this is cool!"
+    <-- RETURN add_comment("user", "this is cool")
+    
+
 You can find the full JSON-RPC specification [here](http://json-rpc.org/wiki/specification "RPC 1.0 Specification").
 
 
@@ -80,6 +86,44 @@ Cliend side JavaScript
 ----------------------
 
 To send a RPC call to the server, the message needs to be sent as the request body. This can't be done with forms (as form data is urlencoded etc.) but can be done with AJAX calls.
+
+#### Request message formatting:
+
+    {
+        "method": "method name to run",
+        "params": ["array", "of", "params"],
+        "id":     "id value (optional)"
+    }
+
+If `id` value is not set, then server takes this as a notification and return nothing (output is empty).
+Parameter values are given to the RPC method as regular variables in the same order they are set in the array:
+
+    "params": ["val1", "val2", "val3"]
+    
+Will be used as
+
+    method = function(rpc, param1, param2, param3){
+        console.log(param1); //val1
+        console.log(param2); //val2
+        console.log(param3); //val3
+    }
+
+The first parameter passed to the method is the RPCHandler object. It has two public methods - `response` and `error`.
+
+    rpc.response("This is the normal response output");
+    rpc.error("This is the output in case of error");
+
+After you send the response (be it either `response` or `error` the http.ServerResponse connection is closed so you can't do much after it.
+
+#### Server response
+
+    {
+        "result": "some kind of output, or null id error occured",
+        "error" : "null or an error message",
+        "id"    : "the same id value that was used wit the request"
+    }
+
+`result` can be any type (string, number, boolean, object, array).
 
 For example if we need to run a RPC method named "check" with params "value" and "other" then we can do it like this (using Prototype library):
 
