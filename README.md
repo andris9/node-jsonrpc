@@ -6,29 +6,18 @@ This module makes it easy to process and respond to JSON-RPC (v1.0) messages.
 JSON-RPC is an extremely simple format to communicate between the client (for example browser) and the host (server).
 You can find the full JSON-RPC specification [here](http://json-rpc.org/wiki/specification "RPC 1.0 Specification").
 
-Cliend side JavaScript
-----------------------
 
-To send a RPC call to the server, the message needs to be sent as the request body. This can't be done with forms (as form data is urlencoded etc.) but can be done with AJAX calls.
+Installation
+------------
 
-For example if we need to run a RPC method named "check" with params "value" and "other" then we can do it like this (using Prototype library):
+You can install this package through npm
 
-    new Ajax.Request("/path/to/rpc",{
-        method: "post",
-        postBody: Object.toJSON(
-            {
-                method: "check",
-                params: ["value","other"],
-                id:     1
-            }),
-        onComplete: function(response){
-            var r = response.responseText.evalJSON();
-            if(r.error)
-                alert("ERROR: "+r.error);
-            else
-                alert("OK: "+r.result);
-        }
-    });
+    npm install jsonrpc
+    
+After this you can require the RPCHandler with
+
+    var rpc = require("jsonrpc").RPCHandler;
+
 
 Server side node.JS
 -------------------
@@ -62,6 +51,30 @@ The server needs to define allowed RPC methods and listen to the requests from t
             // this method can't be accessed from the public interface
         }
     }
+
+Cliend side JavaScript
+----------------------
+
+To send a RPC call to the server, the message needs to be sent as the request body. This can't be done with forms (as form data is urlencoded etc.) but can be done with AJAX calls.
+
+For example if we need to run a RPC method named "check" with params "value" and "other" then we can do it like this (using Prototype library):
+
+    new Ajax.Request("/path/to/rpc",{
+        method: "post",
+        postBody: Object.toJSON(
+            {
+                method: "check",
+                params: ["value","other"],
+                id:     1
+            }),
+        onComplete: function(response){
+            var r = response.responseText.evalJSON();
+            if(r.error)
+                alert("ERROR: "+r.error);
+            else
+                alert("OK: "+r.result);
+        }
+    });
 
 Sample message traffic
 ----------------------
