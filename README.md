@@ -4,6 +4,9 @@ node-jsonrpc
 This module makes it easy to process and respond to JSON-RPC (v1.0) messages.
 
 JSON-RPC is an extremely simple format to communicate between the client (for example browser) and the host (server).
+It's an easy way to run functions server side by providing the server the function name that needs to be executed and the params alongside with it.
+Server runs this function and returns the results for it.
+
 You can find the full JSON-RPC specification [here](http://json-rpc.org/wiki/specification "RPC 1.0 Specification").
 
 
