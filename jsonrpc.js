@@ -136,7 +136,7 @@ RPCHandler.prototype._run = function(){
  * Returns true if a message was sent and false if blank was sent
  **/
 RPCHandler.prototype._output = function(result, error){
-    this.HTTPResponse.writeHead(200, {"Content-Type": "text/javascript"});
+    this.HTTPResponse.writeHead(error?500:200, {"Content-Type": "application/json"});
     if(!this.id){
         this.HTTPResponse.end();
         return false;
