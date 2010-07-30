@@ -22,10 +22,31 @@ After this you can require the RPCHandler with
 Server side node.JS
 -------------------
 
-The server needs to define allowed RPC methods and listen to the requests from the client.
+Main handler for the RPC request is jsonrpc.RPCHandler - this is a constructor function that handles the RPC request all the way to the final output. You don't have to call response.end() for example, this is done by the handler object.
+
+    var RPCHandler = require("jsonrpc").RPCHandler;
+    new RPCHandler(request, response, RPCMethods, debug=false);
+    
+RPChandler construtor takes the following parameters
+    
+ - request: http.ServerRequest object
+ - rsponse: http.ServerResponse object
+ - RPCMethods: object that holds all the available methods
+       RPCMethods: {
+           method_name: function(rpc){
+               rpc.response("hello world!");
+           }
+       }
+   NB! method names that start with an underscore are private!
+ - debug (optional) boolean value indicating if real error messages
+   should be used in case of runtime errors
+
+*Example script*
+
+Server accepts method calls for "check" - this method checks if the two used parameters are equal or not.
 
     var http = require("http"),
-        RPCHandler = require("./jsonrpc").RPCHandler;
+        RPCHandler = require("jsonrpc").RPCHandler;
 
     // start server
     http.createServer(function (request, response) {
