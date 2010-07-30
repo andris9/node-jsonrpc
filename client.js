@@ -40,6 +40,8 @@ function RPCCall(){
     
     new Ajax.Request(RPC_URL,{
         method:"post",
+        contentType:"application/json",
+        requestHeaders:["Accept","application/json"],
         postBody:Object.toJSON(req),
         onComplete: function(response){
             var message = response.responseJSON;
@@ -51,6 +53,5 @@ function RPCCall(){
                 }
             }
         }
-    });
-    
+    });   
 }
