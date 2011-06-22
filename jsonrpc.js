@@ -137,7 +137,7 @@ RPCHandler.prototype._run = function(){
  **/
 RPCHandler.prototype._output = function(result, error){
     this.HTTPResponse.writeHead(error?500:200, {"Content-Type": "application/json"});
-    if(!this.id){
+    if(typeof this.id=="undefined" || this.id === null){
         this.HTTPResponse.end();
         return false;
     }else{
@@ -183,6 +183,7 @@ RPCHandler.prototype._post_body_handler = function (callback){
     });
 
     this.HTTPRequest.addListener('end', function(){
+        console.log(_CONTENT)
         callback(_CONTENT);
     });
 }
