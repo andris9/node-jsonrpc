@@ -183,7 +183,6 @@ RPCHandler.prototype._post_body_handler = function (callback){
     });
 
     this.HTTPRequest.addListener('end', function(){
-        console.log(_CONTENT)
         callback(_CONTENT);
     });
 }
