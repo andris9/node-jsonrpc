@@ -152,3 +152,8 @@ Sample message traffic
 
     --> {method:"check", params: ["value", "value"], id: 2}
     <-- {result:"Params are OK!", error:null, id: 2}
+
+
+## License
+
+MIT
